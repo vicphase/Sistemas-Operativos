@@ -1,0 +1,9 @@
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\bin\Debug\Sistema Operativo.exe.config
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\bin\Debug\Sistema Operativo.exe
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\bin\Debug\Sistema Operativo.pdb
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\obj\Debug\Sistema Operativo.csprojResolveAssemblyReference.cache
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\obj\Debug\Sistema_Operativo.Properties.Resources.resources
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\obj\Debug\Sistema Operativo.csproj.GenerateResource.Cache
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\obj\Debug\Sistema Operativo.exe
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\obj\Debug\Sistema Operativo.pdb
+C:\Users\victo\Desktop\Sistema Operativo\Sistema Operativo\obj\Debug\Sistema_Operativo.Main.resources
