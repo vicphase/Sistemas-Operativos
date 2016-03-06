@@ -154,7 +154,7 @@
             this.LabelCantidadTiempoActual.AutoSize = true;
             this.LabelCantidadTiempoActual.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelCantidadTiempoActual.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.LabelCantidadTiempoActual.Location = new System.Drawing.Point(151, 80);
+            this.LabelCantidadTiempoActual.Location = new System.Drawing.Point(161, 80);
             this.LabelCantidadTiempoActual.Name = "LabelCantidadTiempoActual";
             this.LabelCantidadTiempoActual.Size = new System.Drawing.Size(18, 20);
             this.LabelCantidadTiempoActual.TabIndex = 3;
@@ -269,6 +269,7 @@
             this.ButtonEjecutar.TabIndex = 10;
             this.ButtonEjecutar.Text = "Ejecutar";
             this.ButtonEjecutar.UseVisualStyleBackColor = true;
+            this.ButtonEjecutar.Click += new System.EventHandler(this.ButtonEjecutar_Click);
             // 
             // LabelPagina
             // 
@@ -417,7 +418,10 @@
             // 
             // DataGridViewTablaPaginas
             // 
-            this.DataGridViewTablaPaginas.AllowUserToOrderColumns = true;
+            this.DataGridViewTablaPaginas.AllowUserToAddRows = false;
+            this.DataGridViewTablaPaginas.AllowUserToDeleteRows = false;
+            this.DataGridViewTablaPaginas.AllowUserToResizeColumns = false;
+            this.DataGridViewTablaPaginas.AllowUserToResizeRows = false;
             this.DataGridViewTablaPaginas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.DataGridViewTablaPaginas.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Pagina,
@@ -436,38 +440,45 @@
             this.DataGridViewTablaPaginas.DefaultCellStyle = dataGridViewCellStyle1;
             this.DataGridViewTablaPaginas.Location = new System.Drawing.Point(25, 33);
             this.DataGridViewTablaPaginas.Name = "DataGridViewTablaPaginas";
-            this.DataGridViewTablaPaginas.Size = new System.Drawing.Size(643, 171);
+            this.DataGridViewTablaPaginas.ReadOnly = true;
+            this.DataGridViewTablaPaginas.Size = new System.Drawing.Size(644, 171);
             this.DataGridViewTablaPaginas.TabIndex = 0;
             // 
             // Pagina
             // 
             this.Pagina.HeaderText = "Página";
             this.Pagina.Name = "Pagina";
+            this.Pagina.ReadOnly = true;
             // 
             // R
             // 
             this.R.HeaderText = "R";
             this.R.Name = "R";
+            this.R.ReadOnly = true;
             // 
             // Llegada
             // 
             this.Llegada.HeaderText = "Llegada";
             this.Llegada.Name = "Llegada";
+            this.Llegada.ReadOnly = true;
             // 
             // UltimoAcceso
             // 
             this.UltimoAcceso.HeaderText = "Ult. Acceso";
             this.UltimoAcceso.Name = "UltimoAcceso";
+            this.UltimoAcceso.ReadOnly = true;
             // 
             // Accesos
             // 
             this.Accesos.HeaderText = "Accesos";
             this.Accesos.Name = "Accesos";
+            this.Accesos.ReadOnly = true;
             // 
             // NUR
             // 
             this.NUR.HeaderText = "NUR";
             this.NUR.Name = "NUR";
+            this.NUR.ReadOnly = true;
             // 
             // GroupBoxMemoria
             // 
@@ -669,6 +680,7 @@
             this.ButtonCrearProceso.TabIndex = 20;
             this.ButtonCrearProceso.Text = "Crear Proceso";
             this.ButtonCrearProceso.UseVisualStyleBackColor = true;
+            this.ButtonCrearProceso.Click += new System.EventHandler(this.ButtonCrearProceso_Click);
             // 
             // NumericPaginas
             // 
@@ -686,7 +698,7 @@
             this.LabelDesplegarNombreProcesoNuevo.Name = "LabelDesplegarNombreProcesoNuevo";
             this.LabelDesplegarNombreProcesoNuevo.Size = new System.Drawing.Size(18, 20);
             this.LabelDesplegarNombreProcesoNuevo.TabIndex = 17;
-            this.LabelDesplegarNombreProcesoNuevo.Text = "0";
+            this.LabelDesplegarNombreProcesoNuevo.Text = "1";
             // 
             // LabelEjecucionTotal
             // 
@@ -754,6 +766,7 @@
             this.ComboBoxFinished.Name = "ComboBoxFinished";
             this.ComboBoxFinished.Size = new System.Drawing.Size(74, 28);
             this.ComboBoxFinished.TabIndex = 3;
+            this.ComboBoxFinished.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ComboBoxInterrupciones_KeyPress);
             // 
             // GroupBoxBloqued
             // 
@@ -773,6 +786,7 @@
             this.ComboBoxBloqued.Name = "ComboBoxBloqued";
             this.ComboBoxBloqued.Size = new System.Drawing.Size(74, 28);
             this.ComboBoxBloqued.TabIndex = 2;
+            this.ComboBoxBloqued.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ComboBoxInterrupciones_KeyPress);
             // 
             // GroupBoxRunning
             // 
@@ -814,6 +828,7 @@
             this.ComboBoxReady.Name = "ComboBoxReady";
             this.ComboBoxReady.Size = new System.Drawing.Size(74, 28);
             this.ComboBoxReady.TabIndex = 1;
+            this.ComboBoxReady.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ComboBoxInterrupciones_KeyPress);
             // 
             // LabelAdrian
             // 
