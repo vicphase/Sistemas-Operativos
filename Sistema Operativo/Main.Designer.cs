@@ -386,6 +386,7 @@
             this.ButtonInterrumpir.TabIndex = 11;
             this.ButtonInterrumpir.Text = "Ejecutar Interrupción";
             this.ButtonInterrumpir.UseVisualStyleBackColor = false;
+            this.ButtonInterrumpir.Click += new System.EventHandler(this.ButtonInterrumpir_Click);
             // 
             // ComboBoxInterrupciones
             // 
@@ -574,17 +575,18 @@
             // 
             // NumericTamañoQuantum
             // 
-            this.NumericTamañoQuantum.Location = new System.Drawing.Point(140, 195);
+            this.NumericTamañoQuantum.Location = new System.Drawing.Point(140, 213);
             this.NumericTamañoQuantum.Name = "NumericTamañoQuantum";
             this.NumericTamañoQuantum.Size = new System.Drawing.Size(46, 26);
             this.NumericTamañoQuantum.TabIndex = 18;
+            this.NumericTamañoQuantum.ValueChanged += new System.EventHandler(this.NumericTamañoQuantum_ValueChanged);
             // 
             // LabelTamañoQuantum
             // 
             this.LabelTamañoQuantum.AutoSize = true;
             this.LabelTamañoQuantum.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelTamañoQuantum.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.LabelTamañoQuantum.Location = new System.Drawing.Point(12, 200);
+            this.LabelTamañoQuantum.Location = new System.Drawing.Point(12, 222);
             this.LabelTamañoQuantum.Name = "LabelTamañoQuantum";
             this.LabelTamañoQuantum.Size = new System.Drawing.Size(122, 17);
             this.LabelTamañoQuantum.TabIndex = 10;
@@ -593,7 +595,7 @@
             // RadioButtonHrrn
             // 
             this.RadioButtonHrrn.AutoSize = true;
-            this.RadioButtonHrrn.Location = new System.Drawing.Point(15, 164);
+            this.RadioButtonHrrn.Location = new System.Drawing.Point(15, 180);
             this.RadioButtonHrrn.Name = "RadioButtonHrrn";
             this.RadioButtonHrrn.Size = new System.Drawing.Size(74, 24);
             this.RadioButtonHrrn.TabIndex = 5;
@@ -604,7 +606,7 @@
             // RadioButtonSjf
             // 
             this.RadioButtonSjf.AutoSize = true;
-            this.RadioButtonSjf.Location = new System.Drawing.Point(15, 130);
+            this.RadioButtonSjf.Location = new System.Drawing.Point(15, 146);
             this.RadioButtonSjf.Name = "RadioButtonSjf";
             this.RadioButtonSjf.Size = new System.Drawing.Size(56, 24);
             this.RadioButtonSjf.TabIndex = 4;
@@ -615,7 +617,7 @@
             // RadioButtonSrt
             // 
             this.RadioButtonSrt.AutoSize = true;
-            this.RadioButtonSrt.Location = new System.Drawing.Point(15, 100);
+            this.RadioButtonSrt.Location = new System.Drawing.Point(15, 113);
             this.RadioButtonSrt.Name = "RadioButtonSrt";
             this.RadioButtonSrt.Size = new System.Drawing.Size(59, 24);
             this.RadioButtonSrt.TabIndex = 3;
@@ -626,7 +628,7 @@
             // RadioButtonFifoCpu
             // 
             this.RadioButtonFifoCpu.AutoSize = true;
-            this.RadioButtonFifoCpu.Location = new System.Drawing.Point(15, 70);
+            this.RadioButtonFifoCpu.Location = new System.Drawing.Point(15, 76);
             this.RadioButtonFifoCpu.Name = "RadioButtonFifoCpu";
             this.RadioButtonFifoCpu.Size = new System.Drawing.Size(64, 24);
             this.RadioButtonFifoCpu.TabIndex = 2;

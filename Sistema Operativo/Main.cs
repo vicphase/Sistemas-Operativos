@@ -28,6 +28,7 @@ namespace Sistema_Operativo
             NumericPaginas.Value = 4;
             NumericEjecucionTotal.Value = 15;
             SistemaOperativo.QuantumActual = 5;
+            ComboBoxInterrupciones.SelectedItem = ComboBoxInterrupciones.Items[0];
         }
 
         //Metodo utilizado para que no se pueda escribir en la combo box de tipos de interrupciones
@@ -199,6 +200,8 @@ namespace Sistema_Operativo
         private void ButtonEjecutar_Click(object sender, EventArgs e)
         {
             SistemaOperativo.Ready.calcularMenorTiempoEjecucion();
+            SistemaOperativo.aumentarUnidadDeTiempo();
+
             if (!SistemaOperativo.Bloqued.empty())
             {
                 if (SistemaOperativo.Bloqued.Head.Data.TiempoBloqued == 5)
@@ -209,11 +212,9 @@ namespace Sistema_Operativo
                 }
             }
 
+
             if (SistemaOperativo.Running != null)
             {
-                SistemaOperativo.aumentarUnidadDeTiempo();
-
-
                 //Ejecutar algoritmo de CPU Round Robin
                 if (RadioButtonRoundRobin.Checked)
                     ejecutarRoundRobin();
@@ -243,6 +244,89 @@ namespace Sistema_Operativo
             //Muestra todos los valores del sistema en pantalla
             actualizarInterfaz();
 
+        }
+           
+        //Evento del boton de Interrupciones
+        private void ButtonInterrumpir_Click(object sender, EventArgs e)
+        {
+            SistemaOperativo.Ready.calcularMenorTiempoEjecucion();
+            SistemaOperativo.aumentarUnidadDeTiempo();
+            if (SistemaOperativo.Running != null)
+            {
+                SistemaOperativo.Running.CpuAsignado = SistemaOperativo.Running.CpuAsignado -1;
+                SistemaOperativo.Running.CpuRestante = SistemaOperativo.Running.CpuRestante +1;
+            }
+            //SVC Terminación Normal, SVC Terminación Anormal y Fallo de Programa
+            if (ComboBoxInterrupciones.SelectedIndex == 0 || ComboBoxInterrupciones.SelectedIndex==1 || ComboBoxInterrupciones.SelectedIndex == 4)
+            {
+                if (SistemaOperativo.Running != null)
+                {
+                    SistemaOperativo.Running.CpuRestante = 0;
+                    if (RadioButtonRoundRobin.Checked)
+                        ejecutarRoundRobin();
+
+                    if (RadioButtonFifoCpu.Checked)
+                        ejecutarFifoCpu();
+
+                    if (RadioButtonSjf.Checked)
+                        ejecutarSjf();
+
+                    if (RadioButtonSrt.Checked)
+                        ejecutarSrt();
+
+                    if (RadioButtonHrrn.Checked)
+                        ejecutarHrrn();
+                }
+
+            }
+            //SVC Solicitud de I/O y Solicitud de Recurso
+            if (ComboBoxInterrupciones.SelectedIndex == 2 || ComboBoxInterrupciones.SelectedIndex == 3)
+            {
+                if (SistemaOperativo.Running != null)
+                {
+                    SistemaOperativo.Bloqued.add(SistemaOperativo.Running);
+                    SistemaOperativo.Running = null;
+                    if (RadioButtonRoundRobin.Checked)
+                        SistemaOperativo.cargarRunningRoundRobin();
+
+                    if (RadioButtonFifoCpu.Checked)
+                        SistemaOperativo.cargarRunningFifo();
+
+                    if (RadioButtonSjf.Checked)
+                        SistemaOperativo.cargarRunningSjf();
+
+                    if (RadioButtonSrt.Checked)
+                        SistemaOperativo.cargarRunningSrt();
+
+                    if (RadioButtonHrrn.Checked)
+                        SistemaOperativo.cargarRunningHrrn();
+                }
+            }
+
+            //Interrupción Externa de Quantum Expirado
+            if(ComboBoxInterrupciones.SelectedIndex == 5 && RadioButtonRoundRobin.Checked && SistemaOperativo.Running != null)
+            {
+                SistemaOperativo.Running.QuantumRestante =1;
+                ejecutarRoundRobin();
+            }
+
+            //Interrupción Dispositivo de I/O
+            if(ComboBoxInterrupciones.SelectedIndex == 6 && !SistemaOperativo.Bloqued.empty())
+            {
+                MessageBox.Show("El primer proceso de la fila bloqued pasa a la fila de ready");
+                SistemaOperativo.Ready.addLast(SistemaOperativo.Bloqued.remove());
+            }
+
+            actualizarInterfaz();
+        }
+
+        //Evento cuando cambia el tamaño del quantum en la interfaz
+        private void NumericTamañoQuantum_ValueChanged(object sender, EventArgs e)
+        {
+            SistemaOperativo.QuantumActual = (int) NumericTamañoQuantum.Value;
+            if (SistemaOperativo.Running != null)
+                SistemaOperativo.Running.QuantumRestante = SistemaOperativo.QuantumActual;
+            actualizarInterfaz();
         }
 
 
@@ -368,7 +452,9 @@ namespace Sistema_Operativo
                 else
                 {//Si ya no hay nada en ready se pone como nulo el proceso running
                     MessageBox.Show("No hay nada en la fila de ready, el CPU estará al pendiente por si llega otro proceso");
-                    SistemaOperativo.Running = null;
+                    if (SistemaOperativo.Running != null)
+                        SistemaOperativo.Finished.add(SistemaOperativo.Running);
+                        SistemaOperativo.Running = null;
                 }
             }
             else
@@ -500,6 +586,7 @@ namespace Sistema_Operativo
                 }
             }
         }
+
 
     }
 
