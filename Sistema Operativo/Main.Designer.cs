@@ -510,6 +510,7 @@
             this.ButtonReseteoNur.TabIndex = 10;
             this.ButtonReseteoNur.Text = "Resteo Bits NUR";
             this.ButtonReseteoNur.UseVisualStyleBackColor = false;
+            this.ButtonReseteoNur.Click += new System.EventHandler(this.ButtonReseteoNur_Click);
             // 
             // RadioButtonNur
             // 

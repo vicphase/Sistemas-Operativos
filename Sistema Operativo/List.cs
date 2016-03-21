@@ -120,9 +120,15 @@ namespace Sistema_Operativo
             public Proceso removeFirst()
             {
                 Proceso Data;
+            if (Head != null)
+            {
                 Data = Head.Data;
                 Head = Head.Next;
                 return Data;
+            }
+            else return null;
+               
+                
             }
             //End of removeFirstMethod
 

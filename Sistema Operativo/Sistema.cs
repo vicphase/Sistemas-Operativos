@@ -37,6 +37,7 @@ namespace Sistema_Operativo
             {
                 Running.CpuAsignado = Running.CpuAsignado + 1;
                 Running.CpuRestante = Running.CpuRestante - 1;
+                Running.NumeroTemporalAccesos++;
             }
             Bloqued.aumentarTiempoBloqued();
             Ready.aumentarEnvejecimiento();

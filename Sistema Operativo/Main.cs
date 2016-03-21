@@ -199,22 +199,59 @@ namespace Sistema_Operativo
             //Método para ejecutar una unidad de procesamiento
         private void ButtonEjecutar_Click(object sender, EventArgs e)
         {
-            SistemaOperativo.Ready.calcularMenorTiempoEjecucion();
-            SistemaOperativo.aumentarUnidadDeTiempo();
-
-            if (!SistemaOperativo.Bloqued.empty())
-            {
-                if (SistemaOperativo.Bloqued.Head.Data.TiempoBloqued == 5)
-                {
-                    Proceso TemporalProcess = SistemaOperativo.Bloqued.remove();
-                    TemporalProcess.TiempoBloqued = 0;
-                    SistemaOperativo.Ready.addLast(TemporalProcess);
-                }
-            }
-
+            revisarTiempoBloqued();
 
             if (SistemaOperativo.Running != null)
             {
+                SistemaOperativo.Ready.calcularMenorTiempoEjecucion();
+                SistemaOperativo.aumentarUnidadDeTiempo();
+                revisarBitEscrituraNur();
+                //Si la página no se encuentra cargada
+
+                if (SistemaOperativo.Running.Paginas[0][(int)NumericPagina.Value] == 0)
+                {
+
+                    MessageBox.Show("Ocurrió un fallo de página");
+                    //Si ocupamos remplazar una página
+                    SistemaOperativo.Running.calcularNumeroPaginasCargadas();
+                    if (SistemaOperativo.Running.NumeroPaginasCargadas >= SistemaOperativo.NumeroPaginas)
+                    {
+                        MessageBox.Show("Hay que remplazar una página");
+                        if (RadioButtonFifoMemoria.Checked)
+                            SistemaOperativo.Running.quitarPaginaFifo();
+                        if (RadioButtonLru.Checked)
+                            SistemaOperativo.Running.quitarPaginaLru();
+                        if (RadioButtonLfu.Checked)
+                            SistemaOperativo.Running.quitarPaginaLfu();
+                        if (RadioButtonNur.Checked)
+                            SistemaOperativo.Running.quitarPaginaNur();
+                    }
+
+                    //Cambio el bit de residencia a 1 para cargarla
+                    SistemaOperativo.Running.Paginas[0][(int)NumericPagina.Value] = 1;
+                    //Si la página no estaba cargada se asigna el tiempo de llegada de acuerdo al tiempo actual
+                    SistemaOperativo.Running.Paginas[1][(int)NumericPagina.Value] = SistemaOperativo.TiempoActual;
+                    //Actualizar el ultimo acceso de la página que se esta ejecutando
+                    SistemaOperativo.Running.Paginas[2][(int)NumericPagina.Value] = SistemaOperativo.TiempoActual;
+                    //Aumentar el número de accesos a la página del proceso
+                    SistemaOperativo.Running.Paginas[3][(int)NumericPagina.Value]++;
+                    //Encender el bit de lectura de Nur
+                    SistemaOperativo.Running.Paginas[4][(int)NumericPagina.Value] = 1;
+
+                    //Mando el proceso en running a bloqueado para que cargue su página y cargo 
+                    //el siguiente de acuerdo al algoritmo de scheduling que este activo
+                    ejecutarSolicitudRecurso();
+                }
+
+            }
+
+            if (SistemaOperativo.Running != null)
+            {  
+                //Actualizar el ultimo acceso de la página que se esta ejecutando
+                SistemaOperativo.Running.Paginas[2][(int)NumericPagina.Value] = SistemaOperativo.TiempoActual;
+                //Aumentar el número de accesos a la página del proceso
+                SistemaOperativo.Running.Paginas[3][(int)NumericPagina.Value]++;
+                
                 //Ejecutar algoritmo de CPU Round Robin
                 if (RadioButtonRoundRobin.Checked)
                     ejecutarRoundRobin();
@@ -241,6 +278,10 @@ namespace Sistema_Operativo
                 }
             }
 
+            //Mensaje troll
+            if (SistemaOperativo.Running == null && SistemaOperativo.Ready.empty() && SistemaOperativo.Bloqued.empty())
+                MessageBox.Show("Ni lo intentes, no tiene sentido");
+
             //Muestra todos los valores del sistema en pantalla
             actualizarInterfaz();
 
@@ -250,7 +291,9 @@ namespace Sistema_Operativo
         private void ButtonInterrumpir_Click(object sender, EventArgs e)
         {
             SistemaOperativo.Ready.calcularMenorTiempoEjecucion();
+            if(SistemaOperativo.Running!=null)
             SistemaOperativo.aumentarUnidadDeTiempo();
+            revisarTiempoBloqued();
             if (SistemaOperativo.Running != null)
             {
                 SistemaOperativo.Running.CpuAsignado = SistemaOperativo.Running.CpuAsignado -1;
@@ -261,6 +304,8 @@ namespace Sistema_Operativo
             {
                 if (SistemaOperativo.Running != null)
                 {
+                    MessageBox.Show("El proceso se ha terminado o tuvo un fallo de programa y pasará a la fila de finished");
+
                     SistemaOperativo.Running.CpuRestante = 0;
                     if (RadioButtonRoundRobin.Checked)
                         ejecutarRoundRobin();
@@ -284,28 +329,15 @@ namespace Sistema_Operativo
             {
                 if (SistemaOperativo.Running != null)
                 {
-                    SistemaOperativo.Bloqued.add(SistemaOperativo.Running);
-                    SistemaOperativo.Running = null;
-                    if (RadioButtonRoundRobin.Checked)
-                        SistemaOperativo.cargarRunningRoundRobin();
-
-                    if (RadioButtonFifoCpu.Checked)
-                        SistemaOperativo.cargarRunningFifo();
-
-                    if (RadioButtonSjf.Checked)
-                        SistemaOperativo.cargarRunningSjf();
-
-                    if (RadioButtonSrt.Checked)
-                        SistemaOperativo.cargarRunningSrt();
-
-                    if (RadioButtonHrrn.Checked)
-                        SistemaOperativo.cargarRunningHrrn();
+                    MessageBox.Show("El proceso actual irá a la fila de bloqued y se cargará el siguiente proceso en ready si existe alguno");
+                    ejecutarSolicitudRecurso();
                 }
             }
 
             //Interrupción Externa de Quantum Expirado
             if(ComboBoxInterrupciones.SelectedIndex == 5 && RadioButtonRoundRobin.Checked && SistemaOperativo.Running != null)
             {
+                MessageBox.Show("El Quantum de este proceso ha terminado, regresará a la fila de ready");
                 SistemaOperativo.Running.QuantumRestante =1;
                 ejecutarRoundRobin();
             }
@@ -315,8 +347,19 @@ namespace Sistema_Operativo
             {
                 MessageBox.Show("El primer proceso de la fila bloqued pasa a la fila de ready");
                 SistemaOperativo.Ready.addLast(SistemaOperativo.Bloqued.remove());
+                if (SistemaOperativo.Running == null && SistemaOperativo.Ready.size() == 1)
+                {
+                    SistemaOperativo.Running = SistemaOperativo.Ready.removeFirst();
+                }
             }
 
+            actualizarInterfaz();
+        }
+
+        //Evento para resetear los bits de NUR
+        private void ButtonReseteoNur_Click(object sender, EventArgs e)
+        {
+            SistemaOperativo.Running.resetarBitsNur();
             actualizarInterfaz();
         }
 
@@ -360,7 +403,7 @@ namespace Sistema_Operativo
                 LabelDesplegarQuantumRestante.Text = Convert.ToString(SistemaOperativo.Running.QuantumRestante);
 
                 //Maximo número de páginas que se pueden ejecutar del proceso actual
-                    NumericPagina.Maximum = SistemaOperativo.Running.NumeroPaginas;
+                    NumericPagina.Maximum = SistemaOperativo.Running.NumeroPaginas-1;
                 
             }
             else
@@ -435,6 +478,21 @@ namespace Sistema_Operativo
             actualizarEstadosProcesos();
         }
         //Fin del método actualizarInterfaz
+
+         //Método para ver si un proceso ya puede salir de la fila de bloqued
+         public void revisarTiempoBloqued()
+        {
+            if (!SistemaOperativo.Bloqued.empty())
+            {
+                if (SistemaOperativo.Bloqued.Head.Data.TiempoBloqued >= 5 || (SistemaOperativo.Ready.empty() && SistemaOperativo.Running==null))
+                {
+                    Proceso TemporalProcess = SistemaOperativo.Bloqued.remove();
+                    TemporalProcess.TiempoBloqued = 0;
+                    SistemaOperativo.Ready.addLast(TemporalProcess);
+                }
+            }
+        }
+        //Fin del método revisarTiempoBloqued
 
         //Método para ejecutar un proceso bajo el algoritmo de scheduling Round Robin
         public void ejecutarRoundRobin()
@@ -546,6 +604,7 @@ namespace Sistema_Operativo
             }
         }
 
+        //Método para procesar una ejecución de acuerdo al algoritmo HRRN
         public void ejecutarHrrn()
         {
             if (!SistemaOperativo.Ready.empty())
@@ -587,7 +646,39 @@ namespace Sistema_Operativo
             }
         }
 
+        //Método para que un proceso solicite un recurso del sistema operativo
+        public void ejecutarSolicitudRecurso()
+        {
+            SistemaOperativo.Bloqued.add(SistemaOperativo.Running);
+            SistemaOperativo.Running = null;
+            if (RadioButtonRoundRobin.Checked)
+                SistemaOperativo.cargarRunningRoundRobin();
 
+            if (RadioButtonFifoCpu.Checked)
+                SistemaOperativo.cargarRunningFifo();
+
+            if (RadioButtonSjf.Checked)
+                SistemaOperativo.cargarRunningSjf();
+
+            if (RadioButtonSrt.Checked)
+                SistemaOperativo.cargarRunningSrt();
+
+            if (RadioButtonHrrn.Checked)
+                SistemaOperativo.cargarRunningHrrn();
+        }
+
+        //Método para cambiar a 1 el bit de escritura de NUR
+        public void revisarBitEscrituraNur()
+        {
+            SistemaOperativo.Running.Paginas[4][(int)NumericPagina.Value] = 1;
+
+            if (SistemaOperativo.Running.NumeroTemporalAccesos >= 5)
+            {   
+                SistemaOperativo.Running.Paginas[5][(int)NumericPagina.Value] = 1;
+                SistemaOperativo.Running.NumeroTemporalAccesos = 0;
+            }
+
+        }
     }
 
    
