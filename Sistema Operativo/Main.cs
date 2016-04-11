@@ -241,6 +241,10 @@ namespace Sistema_Operativo
                     //Mando el proceso en running a bloqueado para que cargue su página y cargo 
                     //el siguiente de acuerdo al algoritmo de scheduling que este activo
                     ejecutarSolicitudRecurso();
+                    if (SistemaOperativo.Running != null) { 
+                    SistemaOperativo.Running.QuantumRestante = SistemaOperativo.QuantumActual;
+                    SistemaOperativo.Running.QuantumRestante++;
+                }
                 }
 
             }
@@ -498,7 +502,7 @@ namespace Sistema_Operativo
         public void ejecutarRoundRobin()
         {
             SistemaOperativo.Running.QuantumRestante--; //Restar quantum si se ejecuta
-            if (SistemaOperativo.Running.CpuRestante == 0) //Si ya termino de ejecutarse el proceso
+            if (SistemaOperativo.Running.CpuRestante <= 0) //Si ya termino de ejecutarse el proceso
             {//Si la fila de ready tiene procesos en espera manda a finished el actual y carga el primero en ready
                 if (!SistemaOperativo.Ready.empty())
                 {
@@ -532,7 +536,7 @@ namespace Sistema_Operativo
         //Método para procesar una ejecución de acuerdo al algoritmo FIFO
         public void ejecutarFifoCpu()
         {
-            if (SistemaOperativo.Running.CpuRestante == 0) //Si ya termino de ejecutarse el proceso
+            if (SistemaOperativo.Running.CpuRestante <= 0) //Si ya termino de ejecutarse el proceso
             {//Si la fila de ready tiene procesos en espera manda a finished el actual y carga el primero en ready
                 if (!SistemaOperativo.Ready.empty())
                 {
@@ -554,7 +558,7 @@ namespace Sistema_Operativo
         //Método para procesar una ejecución de acuerdo al algoritmo SJF
         public void ejecutarSjf()
         {
-            if (SistemaOperativo.Running.CpuRestante == 0) //Si ya termino de ejecutarse el proceso
+            if (SistemaOperativo.Running.CpuRestante <= 0) //Si ya termino de ejecutarse el proceso
             {//Si la fila de ready tiene procesos en espera manda a finished el actual y carga el primero en ready
                 if (!SistemaOperativo.Ready.empty())
                 {
@@ -574,7 +578,7 @@ namespace Sistema_Operativo
         //Método para procesar una ejecución de acuerdo al algoritmo SRT
         public void ejecutarSrt()
         {
-            if (SistemaOperativo.Running.CpuRestante == 0) //Si ya termino de ejecutarse el proceso
+            if (SistemaOperativo.Running.CpuRestante <= 0) //Si ya termino de ejecutarse el proceso
             {//Si la fila de ready tiene procesos en espera manda a finished el actual y carga el primero en ready
                 if (!SistemaOperativo.Ready.empty())
                 {
@@ -613,7 +617,7 @@ namespace Sistema_Operativo
             if(SistemaOperativo.Running!=null)
             SistemaOperativo.Running.calcularPrioridad();
 
-            if (SistemaOperativo.Running.CpuRestante == 0) //Si ya termino de ejecutarse el proceso
+            if (SistemaOperativo.Running.CpuRestante <= 0) //Si ya termino de ejecutarse el proceso
             {//Si la fila de ready tiene procesos en espera manda a finished el actual y carga el primero en ready
                 if (!SistemaOperativo.Ready.empty())
                 {
